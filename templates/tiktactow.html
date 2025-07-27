@@ -1,0 +1,289 @@
+edit the code such that<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Fredoka One', cursive;
+      background: linear-gradient(135deg, #06eec0, #ff006f, #ed08bc);
+      background-size: 400% 400%;
+      animation: neonBG 5s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      z-index: 2;
+    }
+
+    .teddy-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .teddy-container img {
+      width: 195px;
+      display: none;
+    }
+
+    .teddy-message {
+      color: white;
+      font-size: 2.5rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .game-container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      background-color: #0ee6c2;
+      padding: 10px;
+      border-radius: 20px;
+      margin: 0 auto;
+    }
+
+    .cell {
+      background-color: #fff;
+      font-size: 3.5rem;
+      color: #049ee6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      background-color: rgb(0, 255, 21);
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: #ff1100;
+      font-size: 1.2rem;
+    }
+
+    .winner-banner {
+      font-size: 3.5rem;
+      color: #ff0303;
+      margin-top: 20px;
+      opacity: 0;
+      transition: all 0.5s ease;
+      font-family: 'Fredoka One', cursive;
+      animation: popIn 0.6s ease forwards;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      display: none;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes neonBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+  <div class="main-wrapper">
+    <div class="teddy-container" id="left-teddy">
+      <img src="https://www.whoa.in/201604-Whoa/3210-smiley-emoji-animated-gif-with-sad-and-crying-face-emotional.jpg" alt="Sad Teddy">
+      <div class="teddy-message" id="left-message">O loses</div>
+    </div>
+
+    <div class="game-container">
+      <h1>Tic Tac Toe</h1>
+      <div class="board" id="board"></div>
+      <div class="winner-banner" id="winner-banner"></div>
+      <div class="footer">Intelligent may win!</div>
+    </div>
+
+    <div class="teddy-container" id="right-teddy">
+      <img src="https://i.pinimg.com/originals/64/45/ee/6445ee2274a782a7c528303e9bd823d7.gif" alt="Happy Teddy">
+      <div class="teddy-message" id="right-message">X wins</div>
+    </div>
+  </div>
+
+  <script>
+    const boardEl = document.getElementById('board');
+    const banner = document.getElementById('winner-banner');
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+
+    const leftTeddy = document.getElementById('left-teddy');
+    const rightTeddy = document.getElementById('right-teddy');
+    const leftMsg = document.getElementById('left-message');
+    const rightMsg = document.getElementById('right-message');
+
+    let board = Array(9).fill('');
+    let currentPlayer = 'X';
+    let confetti = [];
+    let confettiInterval;
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.dataset.index = i;
+      cell.addEventListener('click', handleClick);
+      boardEl.appendChild(cell);
+    }
+
+    const winningCombos = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    function handleClick(e) {
+      const index = e.target.dataset.index;
+      if (board[index] !== '') return;
+
+      board[index] = currentPlayer;
+      e.target.textContent = currentPlayer;
+
+      if (checkWinner()) {
+        showWinner(currentPlayer);
+        showConfetti();
+        setTimeout(() => resetGame(), 4000);
+        return;
+      }
+
+      if (!board.includes('')) {
+        banner.textContent = "It's a draw!";
+        banner.style.opacity = '1';
+        setTimeout(() => resetGame(), 4000);
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+
+    function checkWinner() {
+      return winningCombos.some(([a, b, c]) => {
+        return board[a] && board[a] === board[b] && board[a] === board[c];
+      });
+    }
+
+    function showWinner(winner) {
+      banner.textContent = `${winner} wins!`;
+      banner.style.opacity = '1';
+
+      if (winner === 'X') {
+        rightTeddy.querySelector('img').style.display = 'block';
+        rightMsg.textContent = 'X wins';
+        rightMsg.style.display = 'block';
+
+        leftTeddy.querySelector('img').style.display = 'block';
+        leftMsg.textContent = 'O loses';
+        leftMsg.style.display = 'block';
+      } else {
+        rightTeddy.querySelector('img').style.display = 'block';
+        rightMsg.textContent = 'O wins';
+        rightMsg.style.display = 'block';
+
+        leftTeddy.querySelector('img').style.display = 'block';
+        leftMsg.textContent = 'X loses';
+        leftMsg.style.display = 'block';
+      }
+    }
+
+    function resetGame() {
+      board = Array(9).fill('');
+      currentPlayer = 'X';
+      document.querySelectorAll('.cell').forEach(cell => cell.textContent = '');
+      banner.textContent = '';
+      banner.style.opacity = '0';
+      leftTeddy.querySelector('img').style.display = 'none';
+      rightTeddy.querySelector('img').style.display = 'none';
+      leftMsg.style.display = 'none';
+      rightMsg.style.display = 'none';
+      hideConfetti();
+    }
+
+    function showConfetti() {
+      canvas.style.display = 'block';
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      confetti = Array.from({ length: 200 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 10 + 10,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        tilt: Math.random() * 10 - 5,
+        tiltAngle: 0
+      }));
+
+      confettiInterval = setInterval(drawConfetti, 20);
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        c.y += 1 + Math.random() * 3;
+        c.tiltAngle += 0.1;
+        c.tilt = Math.sin(c.tiltAngle) * 10;
+        ctx.beginPath();
+        ctx.lineWidth = c.r;
+        ctx.strokeStyle = c.color;
+        ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+        ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+        ctx.stroke();
+      });
+    }
+
+    function hideConfetti() {
+      clearInterval(confettiInterval);
+      canvas.style.display = 'none';
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

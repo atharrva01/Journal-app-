@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: #D92C54;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        input{
+            padding: 15px 50px 15px 50px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #932F67;
+            color: aliceblue;
+            font-weight: bold;
+        }
+        ::placeholder{
+            color: #DDDEAB;
+            font-weight: bold;
+        }
+         h1{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 6rem;
+            color: #DDDEAB;
+        }
+        button{
+            padding: 20px 40px 20px 40px;
+            background-color: #932F67;
+            border: none;
+            border-radius: 8px;
+            color: #DDDEAB;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover{
+            background-color: #430428;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>Login</h1>
+    <form method = 'post'>
+    <input type="email" name="Email" id="" placeholder="Enter your email" required>
+    <input type="password" name="Password" id="" placeholder="Enter Password" required>
+
+        <a href="{{ url_for('home')}}"><button>Submit</button></a>
+
+    </form>
+  
+        
+</body>
+</html>

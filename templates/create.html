@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create post</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: #932F67;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }.journal-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.journal-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.journal-container label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: 600;
+  color: #444;
+}
+
+.journal-container input[type="text"],
+.journal-container input[type="date"],
+.journal-container textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.journal-container textarea {
+  height: 160px;
+  resize: vertical;
+}
+
+.journal-container button {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.journal-container button:hover {
+  background-color: #45a049;
+}
+
+    </style>
+    
+</head>
+<body>
+    <div class="journal-container">
+  <h2>New Journal Entry</h2>
+  <form method="POST">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" placeholder="Enter journal title" required>
+
+
+    <label for="entry">Description</label>
+    <textarea id="entry" name="entry" placeholder="Write your thoughts..." required></textarea>
+
+    <button type="submit">Save Entry</button>
+  </form>
+</div>
+
+</body>
+</html>
